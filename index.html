@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>BLACKWOLF Web Workflow Platform V2.6.5 Run Retention</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand-wrap">
+      <button class="menu-toggle" id="menuToggle" aria-label="ย่อเมนู">☰</button>
+      <div class="brand-mark">🐺</div>
+      <div class="brand-copy"><strong>BLACKWOLF</strong><span>WEB WORKFLOW V2.6.5 RETENTION</span></div>
+    </div>
+    <nav>
+      <button class="nav-item active" data-page="prepare"><span>▷</span><b>Prepare & Run</b></button>
+      <button class="nav-item" data-page="approval"><span>✓</span><b>Approval & Download</b></button>
+      <button class="nav-item" data-page="dashboard"><span>⌂</span><b>Executive Dashboard</b></button>
+      <button class="nav-item" data-page="report"><span>▧</span><b>Executive Report</b></button>
+      <button class="nav-item" data-page="history"><span>◷</span><b>Run History</b></button>
+      <button class="nav-item" data-page="settings"><span>⚙</span><b>Settings</b></button>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="project-pill">Foreign Worker Policy Review</div>
+      <div class="engine-state"><i id="engineDot"></i><span id="engineState">Checking engine...</span></div>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="topbar">
+      <div><strong id="topTitle">Prepare & Run</strong><small>Offline Company Build</small></div>
+      <div class="top-actions">
+        <span class="status-chip" id="globalStatus">WAITING</span>
+        <div class="processed"><small>Current Run</small><strong id="currentRunLabel">-</strong></div>
+        <button class="outline-btn" id="shutdownBtn">ปิดระบบ</button>
+      </div>
+    </header>
+
+    <section class="page active" id="page-prepare">
+      <div class="page-heading"><div><h1>Prepare Files & Run Workflow</h1><p>รับไฟล์ครบชุดและประมวลผลตาม Flow ของโปรแกรมเดิม</p></div><span class="offline-badge">LOCAL / OFFLINE</span></div>
+      <div class="stepper">
+        <div class="step active" data-step="1"><span>1</span><b>เลือกไฟล์</b></div>
+        <div class="step" data-step="2"><span>2</span><b>ETL</b></div>
+        <div class="step" data-step="3"><span>3</span><b>Validate</b></div>
+        <div class="step" data-step="4"><span>4</span><b>Run</b></div>
+        <div class="step" data-step="5"><span>5</span><b>Review</b></div>
+        <div class="step" data-step="6"><span>6</span><b>Download</b></div>
+      </div>
+
+      <article class="panel info-banner">
+        <div><strong>เวอร์ชันใช้งานจริง</strong><span>ระบบจะสร้าง Master ฉบับอัปเดต, เช็คสถานะ ISSUE, CSV และ Audit</span></div>
+        <div class="requirements"><b>ต้องมี:</b> Windows + Microsoft Excel Desktop</div>
+      </article>
+
+      <div class="prepare-layout">
+        <article class="panel files-panel">
+          <div class="section-title"><div><h2>ไฟล์ที่ใช้ประมวลผล</h2><p>ลากไฟล์ทั้งหมดมาวางครั้งเดียว ระบบจะแยกประเภทให้อัตโนมัติ</p></div><div class="section-actions"><label class="outline-btn compact">เลือกไฟล์ทั้งหมด<input id="bulkFileInput" type="file" accept=".xlsx,.xls,.xlsm,.txt" multiple hidden></label><label class="outline-btn compact">เลือกทั้งโฟลเดอร์<input id="folderInput" type="file" webkitdirectory multiple hidden></label><button class="outline-btn compact" id="clearOptionalBtn" type="button">ล้างเฉพาะ Optional</button><button class="outline-btn compact" id="clearFilesBtn" type="button">ล้างไฟล์ทั้งหมด</button></div></div>
+          <div class="bulk-drop-zone" id="bulkDropZone" tabindex="0" role="button" aria-label="ลากไฟล์ทั้งหมดมาวาง หรือคลิกเพื่อเลือกไฟล์">
+            <div class="bulk-drop-icon">⇩</div>
+            <div><strong>โยนไฟล์ทั้งหมดลงตรงนี้ได้เลย</strong><span>เลือกพร้อมกันได้ทั้ง Master, เช็คสถานะ ISSUE, Daily Report, M190, ข้อมูลไม่สมบูรณ์, Blacklist และ ETL.txt</span><small>ระบบจะจำแนกจากชื่อไฟล์และวางลงช่องให้โดยอัตโนมัติ</small></div>
+            <b>ลากและวาง / คลิกเลือก</b>
+          </div>
+          <div class="bulk-detection hidden" id="bulkDetection"></div>
+          <div class="file-grid">
+            <label class="file-slot required" data-field="master">
+              <input type="file" id="masterInput" accept=".xlsx" hidden>
+              <span class="file-no">1</span><div><strong>Master ล่าสุด</strong><small>*เช็คกรมธรรม์ต่างด้าวที่ยังไม่ออก*.xlsx</small><em id="masterName">เลือกไฟล์</em></div><b>Required</b><button class="file-remove hidden" type="button" data-remove-file="master" title="เอาไฟล์นี้ออก">×</button>
+            </label>
+            <label class="file-slot required" data-field="issue">
+              <input type="file" id="issueInput" accept=".xlsx" hidden>
+              <span class="file-no">2</span><div><strong>เช็คสถานะ ISSUE</strong><small>*เช็คสถานะ ISSUE*.xlsx</small><em id="issueName">เลือกไฟล์</em></div><b>Required</b><button class="file-remove hidden" type="button" data-remove-file="issue" title="เอาไฟล์นี้ออก">×</button>
+            </label>
+            <label class="file-slot required" data-field="daily">
+              <input type="file" id="dailyInput" accept=".xlsx" hidden>
+              <span class="file-no">3</span><div><strong>Daily Report</strong><small>รายงานงานประกันแรงงานต่างด้าว</small><em id="dailyName">เลือกไฟล์</em></div><b>Required</b><button class="file-remove hidden" type="button" data-remove-file="daily" title="เอาไฟล์นี้ออก">×</button>
+            </label>
+            <label class="file-slot required" data-field="m190">
+              <input type="file" id="m190Input" accept=".xlsx" hidden>
+              <span class="file-no">4</span><div><strong>M190 Premium by Policy</strong><small>M190027_PRD008_Premium_by_Policy</small><em id="m190Name">เลือกไฟล์</em></div><b>Required</b><button class="file-remove hidden" type="button" data-remove-file="m190" title="เอาไฟล์นี้ออก">×</button>
+            </label>
+            <label class="file-slot optional" data-field="sm">
+              <input type="file" id="smInput" accept=".xlsx" hidden>
+              <span class="file-no">5</span><div><strong>ข้อมูลไม่สมบูรณ์ / SM</strong><small>ไม่มีไฟล์ได้ ระบบจะล้างข้อมูลเก่า</small><em id="smName">ยังไม่เลือก</em></div><b>Optional</b><button class="file-remove hidden" type="button" data-remove-file="sm" title="เอาไฟล์นี้ออก">×</button>
+            </label>
+            <label class="file-slot optional" data-field="blacklist">
+              <input type="file" id="blacklistInput" accept=".xls,.xlsx,.xlsm" hidden>
+              <span class="file-no">6</span><div><strong>Blacklist</strong><small>รองรับ .xls และ .xlsx</small><em id="blacklistName">ยังไม่เลือก</em></div><b>Optional</b><button class="file-remove hidden" type="button" data-remove-file="blacklist" title="เอาไฟล์นี้ออก">×</button>
+            </label>
+          </div>
+        </article>
+
+        <article class="panel validation-panel">
+          <div class="section-title"><div><h2>Validation Readiness</h2><p>ระบบตรวจความพร้อมก่อนส่งเข้า Excel Engine</p></div></div>
+          <div class="validation-list" id="validationList">
+            <div data-check="files"><span>1</span><p><strong>Required files</strong><small>รอไฟล์ Master, เช็คสถานะ ISSUE, Daily Report และ M190</small></p></div>
+            <div data-check="etl"><span>2</span><p><strong>ETL format</strong><small>ETL ว่างได้ หรือกรอก No.PropID:Policy:Group</small></p></div>
+            <div data-check="engine"><span>3</span><p><strong>Local engine</strong><small>กำลังตรวจสอบ</small></p></div>
+            <div data-check="ready"><span>4</span><p><strong>Workflow ready</strong><small>ยังไม่พร้อมรัน</small></p></div>
+          </div>
+          <button class="primary-btn wide" id="runBtn" disabled>▶ Validate & Run Workflow</button>
+        </article>
+      </div>
+
+      <article class="panel etl-panel">
+        <div class="section-title"><div><h2>ETL Entry <small>(Optional)</small></h2><p>ใช้เฉพาะรายการที่ออกกรมธรรม์ผ่าน ETL แต่ยังไม่อยู่ใน M190</p></div><span class="mini-chip" id="etlChip">0 ROWS</span></div>
+        <div class="etl-toolbar">
+          <label class="outline-btn">Import ETL.txt<input id="etlFileInput" type="file" accept=".txt" hidden></label>
+          <button class="outline-btn" id="pasteEtlBtn">Paste</button>
+          <button class="outline-btn" id="clearEtlBtn">Clear</button>
+        </div>
+        <textarea id="etlInput" spellcheck="false" placeholder="1.7240899843:HP651249:HLABOR&#10;2.7240895649:HP651248:HLABOR"></textarea>
+        <div class="etl-stats"><span>Valid <b id="etlValid">0</b></span><span>Invalid <b id="etlInvalid">0</b></span><span>Duplicate PropID <b id="etlDup">0</b></span><em id="etlMessage">ETL ว่างได้</em></div>
+        <div class="etl-errors hidden" id="etlErrors"></div>
+      </article>
+
+      <article class="panel progress-panel hidden" id="progressPanel">
+        <div class="progress-heading"><div><h2>Workflow Progress</h2><p id="progressMessage">กำลังเตรียม...</p><small>ระบบจะแสดงขั้นตอนจริงและเวลาที่ใช้ ไฟล์ทั่วไปสูงสุด 30 นาที และ Large Data สูงสุด 120 นาที ระบบจะหยุดอัตโนมัติแทนการค้าง</small></div><strong id="progressPercent">0%</strong></div>
+        <div class="progress-track"><i id="progressBar"></i></div>
+        <div class="progress-actions"><button class="outline-btn danger-outline" id="cancelRunBtn" type="button">■ หยุดการรัน</button><button class="outline-btn" id="deleteRunBtn" type="button" disabled>ล้างข้อมูล Run นี้</button></div>
+        <pre id="logBox"></pre>
+      </article>
+    </section>
+
+    <section class="page" id="page-approval">
+      <div class="page-heading"><div><h1>Approval & Download</h1><p>ตรวจผลและดาวน์โหลดไฟล์ที่อัปเดตแล้ว</p></div></div>
+      <div class="empty-state" id="approvalEmpty"><strong>ยังไม่มีผลลัพธ์</strong><span>กรุณารัน Workflow ให้สำเร็จก่อน</span></div>
+      <div id="approvalContent" class="hidden">
+        <div class="approval-grid approval-grid-two">
+          <article class="panel approval-card executive-download"><span>1</span><h3>เช็คกรมธรรม์ต่างด้าวที่ยังไม่ออก V.2.5.3</h3><p>Master ฉบับอัปเดต Pending, SM, Blacklist, Menu E, Pivot และ Report พร้อมใช้งาน</p><button class="primary-btn download-btn" data-file="master">ดาวน์โหลด Master ฉบับอัปเดต</button></article>
+          <article class="panel approval-card executive-download"><span>2</span><h3>เช็คสถานะ ISSUE</h3><p>ไฟล์ ISSUE ที่อัปเดต Data, Check, M190 และ ETL จากรอบล่าสุดแล้ว</p><button class="success-btn download-btn" data-file="issue">ดาวน์โหลดเช็คสถานะ ISSUE</button></article>
+        </div>
+        <article class="panel approval-reconcile"><div><h2>Workflow Reconciliation</h2><p>ตรวจจำนวนข้อมูลที่ผ่าน M190, ETL และจำนวน Pending ก่อนอนุมัติ</p></div><div class="reconcile-metrics" id="approvalReconcile"></div></article>
+        <article class="panel approval-note"><label><input type="checkbox" id="approvalCheck"> ฉันตรวจสอบยอด KPI และตารางรายละเอียดแล้ว</label><div><button class="success-btn" id="saveFolderBtn">อนุมัติและบันทึกลงโฟลเดอร์</button><button class="outline-btn" id="openOutputBtn">เปิดโฟลเดอร์ผลลัพธ์</button><button class="outline-btn download-btn" data-file="backupMaster">Master Backup</button><button class="outline-btn download-btn" data-file="backupIssue">ISSUE Backup</button></div></article>
+      </div>
+    </section>
+
+    <section class="page" id="page-dashboard">
+      <div class="page-heading dashboard-head"><div><h1>Executive Dashboard</h1><p>ภาพรวมรายการกรมธรรม์คงเหลือจาก Master ฉบับอัปเดต</p></div><div><button class="outline-btn" id="refreshDashboard">↻ Refresh</button><button class="primary-btn nav-go-prepare">▷ Run ใหม่</button></div></div>
+      <div class="empty-state" id="dashboardEmpty"><strong>ยังไม่มีข้อมูล Dashboard</strong><span>รัน Workflow ก่อนเพื่อดูผลลัพธ์</span></div>
+      <div id="dashboardContent" class="hidden">
+        <div class="kpi-grid">
+          <article class="kpi blue"><span>รอ Issue</span><strong id="kpiPending">0</strong><small>กรมธรรม์</small></article>
+          <article class="kpi violet"><span>ข้อมูลไม่สมบูรณ์</span><strong id="kpiIncomplete">0</strong><small>กรมธรรม์</small></article>
+          <article class="kpi orange"><span>อายุงานเกิน 7 วัน</span><strong id="kpiOverdue">0</strong><small>กรมธรรม์</small></article>
+          <article class="kpi dark"><span>Blacklist</span><strong id="kpiBlacklist">0</strong><small>กรมธรรม์</small></article>
+          <article class="kpi teal"><span>ติดปัญหา Menu E</span><strong id="kpiMenuE">0</strong><small>กรมธรรม์</small></article>
+        </div>
+        <div class="dashboard-grid">
+          <article class="panel table-panel">
+            <div class="section-title"><div><h2>รายการรายละเอียด</h2><p id="tableSummary">0 รายการ</p></div><button class="outline-btn download-btn" data-file="csv">⇩ Export CSV</button></div>
+            <div class="filters"><input type="search" id="searchInput" placeholder="ค้นหา ProposalID, Policy, ชื่อ, เลขต่างด้าว..."><select id="statusFilter"><option value="all">ทุกสถานะ</option><option>รอ Issue</option><option>ข้อมูลไม่สมบูรณ์</option><option>ติดปัญหาไม่เข้าในเมนู E</option><option>Blacklist</option></select></div>
+            <div class="table-wrap"><table><thead><tr><th>ProposalID</th><th>Policy</th><th>Agency</th><th>เลขต่างด้าว</th><th>ชื่อแรงงาน</th><th>เบี้ย</th><th>Create Date</th><th>Status</th><th>Aging</th></tr></thead><tbody id="resultBody"></tbody></table></div>
+            <div class="pager"><span id="pageInfo">หน้า 1</span><div><button class="outline-btn" id="prevPage">ก่อนหน้า</button><button class="outline-btn" id="nextPage">ถัดไป</button></div></div>
+          </article>
+          <aside>
+            <article class="panel summary-card"><h2>Executive Summary</h2><div><span>ยอดเบี้ยรวม</span><strong id="sumPremium">0 บาท</strong></div><div><span>จำนวนกรมธรรม์</span><strong id="sumPolicies">0</strong></div><div><span>จำนวนแถวข้อมูล</span><strong id="sumRows">0</strong></div><div><span>Validation</span><strong id="sumValidation">-</strong></div></article>
+            <article class="panel workflow-card"><h2>Workflow Reconciliation</h2><div><span>ช่วงวันที่</span><strong id="sumDateRange">-</strong></div><div><span>Daily Report</span><strong id="sumReportRows">0</strong></div><div><span>M190 PropID</span><strong id="sumM190">0</strong></div><div><span>ETL PropID</span><strong id="sumETL">0</strong></div><div><span>ออกแล้ว ตัดออก</span><strong id="sumIssuedRemoved">0</strong></div><div><span>Pending เขียนเข้า Master</span><strong id="sumPendingWritten">0</strong></div></article>
+            <article class="panel aging-card"><h2>Aging Distribution</h2><div><span>1–7 วัน</span><i><b id="age1Bar"></b></i><strong id="age1">0</strong></div><div><span>8–15 วัน</span><i><b id="age2Bar"></b></i><strong id="age2">0</strong></div><div><span>16–30 วัน</span><i><b id="age3Bar"></b></i><strong id="age3">0</strong></div><div><span>มากกว่า 30 วัน</span><i><b id="age4Bar"></b></i><strong id="age4">0</strong></div></article>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-report">
+      <div class="page-heading report-page-heading"><div><h1>Executive Report Viewer</h1><p>รายงานสรุปสำหรับนำเสนอผู้บริหารและบันทึกเป็น PDF</p></div><div class="report-actions"><button class="outline-btn" id="refreshReportBtn">↻ Refresh</button><button class="primary-btn" id="printReportBtn">Print / Save PDF</button></div></div>
+      <div class="empty-state" id="reportEmpty"><strong>ยังไม่มีรายงาน</strong><span>รัน Workflow ให้สำเร็จก่อน</span></div>
+      <article class="report-sheet executive-report hidden" id="reportSheet">
+        <div class="report-cover-band"></div>
+        <header class="executive-report-header">
+          <div class="report-branding"><div class="report-logo">BW</div><div><span class="report-eyebrow">MANAGEMENT REPORT</span><h1>Foreign Worker Policy Review</h1><p>สรุปสถานะกรมธรรม์แรงงานต่างด้าวสำหรับผู้บริหาร</p></div></div>
+          <div class="report-meta"><div><span>Processed at</span><strong id="reportProcessed">-</strong></div><div><span>Run ID</span><strong id="reportRunId">-</strong></div><div><span>ช่วงข้อมูล</span><strong id="reportDateRange">-</strong></div></div>
+        </header>
+
+        <section class="executive-message">
+          <div><span>EXECUTIVE HIGHLIGHT</span><h2>ภาพรวมงานที่ต้องติดตาม</h2><p id="reportExecutiveNote">-</p></div>
+          <div class="validation-seal"><span>Validation</span><strong id="reportValidation">-</strong></div>
+        </section>
+
+        <section class="report-headline-kpis">
+          <article><span>กรมธรรม์คงเหลือ</span><strong id="reportPolicies">0</strong><small>รายการที่ต้องติดตาม</small></article>
+          <article><span>ยอดเบี้ยรวม</span><strong id="reportPremium">0 บาท</strong><small>มูลค่างานคงเหลือ</small></article>
+          <article><span>อายุงานเกิน 7 วัน</span><strong id="reportOverdue">0</strong><small>รายการเร่งด่วน</small></article>
+          <article><span>รอ Issue</span><strong id="reportPending">0</strong><small>รายการพร้อมดำเนินการ</small></article>
+        </section>
+
+        <section class="report-section">
+          <div class="report-section-title"><div><span>STATUS OVERVIEW</span><h2>สถานะงานคงเหลือ</h2></div><p>จำนวนกรมธรรม์แยกตามสถานะหลัก</p></div>
+          <div class="report-status-cards">
+            <article class="status-blue"><span>รอ Issue</span><strong id="reportPendingCard">0</strong></article>
+            <article class="status-violet"><span>ข้อมูลไม่สมบูรณ์</span><strong id="reportIncomplete">0</strong></article>
+            <article class="status-orange"><span>ติดปัญหา Menu E</span><strong id="reportMenuE">0</strong></article>
+            <article class="status-dark"><span>Blacklist</span><strong id="reportBlacklist">0</strong></article>
+          </div>
+          <table class="report-table executive-status-table"><thead><tr><th>สถานะ</th><th>จำนวนกรมธรรม์</th><th>สัดส่วน</th><th>ระดับติดตาม</th></tr></thead><tbody id="reportStatusBody"></tbody></table>
+        </section>
+
+        <section class="report-section report-reconciliation-section">
+          <div class="report-section-title"><div><span>WORKFLOW RECONCILIATION</span><h2>ผลการประมวลผลรอบล่าสุด</h2></div><p>ตรวจสอบความครบถ้วนของข้อมูลตั้งแต่ต้นทางถึง Master และ ISSUE</p></div>
+          <div class="report-reconciliation-grid">
+            <div><span>Daily Report</span><strong id="reportDailyRows">0</strong><small>รายการผ่านเงื่อนไขวันที่</small></div>
+            <div><span>M190 PropID</span><strong id="reportM190">0</strong><small>รายการออกกรมธรรม์แล้ว</small></div>
+            <div><span>ETL PropID</span><strong id="reportETL">0</strong><small>รายการเสริมจาก ETL</small></div>
+            <div><span>ตัดรายการออกแล้ว</span><strong id="reportIssuedRemoved">0</strong><small>ไม่นับเป็นงานคงเหลือ</small></div>
+            <div><span>Pending เข้า Master</span><strong id="reportPendingWritten">0</strong><small>รายการที่เขียนลง Master</small></div>
+            <div><span>Data เข้า ISSUE</span><strong id="reportIssueDataRows">0</strong><small>รายการที่อัปเดตในเช็คสถานะ ISSUE</small></div>
+          </div>
+        </section>
+
+        <footer class="executive-report-footer"><div><strong>BLACKWOLF Workflow Platform</strong><span>Generated locally · Confidential Management Use</span></div><div>V2.6.5 Run Retention</div></footer>
+      </article>
+    </section>
+
+    <section class="page" id="page-history">
+      <div class="page-heading"><div><h1>Run History</h1><p>ประวัติการประมวลผลที่เก็บภายในเครื่อง ระบบจะลบ Run และไฟล์ภายในอัตโนมัติเมื่อครบ 14 วัน</p></div><button class="outline-btn" id="refreshHistory">↻ Refresh</button></div>
+      <div class="history-retention-note"><span>⏳</span><div><strong>เก็บข้อมูล Run เป็นเวลา 14 วัน</strong><small>แต่ละรายการจะแสดงเวลานับถอยหลัง ไฟล์ที่ดาวน์โหลดหรือคัดลอกออกไปยังโฟลเดอร์ภายนอกจะไม่ถูกลบ</small></div></div>
+      <article class="panel"><div class="history-list" id="historyList"><div class="empty-row">ยังไม่มีประวัติ</div></div></article>
+    </section>
+
+    <section class="page" id="page-settings">
+      <div class="page-heading settings-heading">
+        <div><h1 data-i18n="settingsTitle">Settings & System Information</h1><p data-i18n="settingsSubtitle">ตั้งค่าภาษา ธีม การจัดเก็บไฟล์ การช่วยเหลือ และตรวจสอบสถานะระบบ</p></div>
+        <button class="outline-btn" id="refreshSystemStatusBtn" type="button">↻ <span data-i18n="refreshStatus">รีเฟรชสถานะ</span></button>
+      </div>
+
+      <div class="settings-control-grid">
+        <article class="panel settings-card">
+          <div class="settings-card-head"><span class="settings-icon">文</span><div><h2 data-i18n="languageTitle">ภาษา</h2><p data-i18n="languageDesc">เลือกภาษาหลักของเมนูและหน้าการตั้งค่า</p></div></div>
+          <div class="segmented-control" id="languageControl">
+            <button type="button" data-language="th">ไทย</button>
+            <button type="button" data-language="en">English</button>
+          </div>
+        </article>
+
+        <article class="panel settings-card">
+          <div class="settings-card-head"><span class="settings-icon">◐</span><div><h2 data-i18n="themeTitle">ธีมขาว–ดำ</h2><p data-i18n="themeDesc">สลับระหว่างโหมดสว่างและโหมดมืด</p></div></div>
+          <div class="segmented-control" id="themeControl">
+            <button type="button" data-theme-value="light">☀ <span data-i18n="lightTheme">ขาว</span></button>
+            <button type="button" data-theme-value="dark">● <span data-i18n="darkTheme">ดำ</span></button>
+          </div>
+        </article>
+
+        <article class="panel settings-card support-card">
+          <div class="settings-card-head"><span class="settings-icon line-icon">LINE</span><div><h2 data-i18n="supportTitle">แจ้งปัญหา</h2><p data-i18n="supportDesc">เปิดกลุ่ม LINE สำหรับแจ้งปัญหาและติดตามการแก้ไข</p></div></div>
+          <a class="success-btn settings-action-link" href="https://line.me/ti/g/5yfX4kpasW" target="_blank" rel="noopener noreferrer" id="lineSupportBtn">LINE กลุ่มช่วยเหลือ ↗</a>
+        </article>
+
+        <article class="panel settings-card manual-card">
+          <div class="settings-card-head"><span class="settings-icon">PDF</span><div><h2 data-i18n="manualTitle">ดาวน์โหลดคู่มือ PDF</h2><p id="manualStatusText" data-i18n="manualWaiting">รอเพิ่มไฟล์คู่มือ BLACKWOLF_User_Manual.pdf</p></div></div>
+          <button class="outline-btn wide" id="downloadManualBtn" type="button" disabled><span data-i18n="manualButtonWaiting">ยังไม่มีไฟล์คู่มือ</span></button>
+        </article>
+
+        <article class="panel settings-card storage-card settings-span-2">
+          <div class="settings-card-head"><span class="settings-icon">▣</span><div><h2 data-i18n="storageTitle">เลือกจัดเก็บไฟล์</h2><p data-i18n="storageDesc">ผลลัพธ์แต่ละ Run จะถูกคัดลอกไปยังโฟลเดอร์ที่เลือก โดยไม่ลบไฟล์ในระบบ</p></div></div>
+          <div class="storage-path-box"><span data-i18n="currentStorage">โฟลเดอร์ปัจจุบัน</span><strong id="storagePathText">กำลังอ่าน...</strong></div>
+          <div class="settings-actions-row">
+            <button class="primary-btn" id="chooseStorageBtn" type="button" data-i18n="chooseFolder">เลือกโฟลเดอร์</button>
+            <button class="outline-btn" id="openStorageBtn" type="button" data-i18n="openFolder">เปิดโฟลเดอร์</button>
+            <button class="outline-btn" id="useDefaultStorageBtn" type="button" data-i18n="useDefault">ใช้ค่าเริ่มต้น</button>
+          </div>
+          <small class="settings-note" data-i18n="storageNote">ระบบจะสร้างโฟลเดอร์ BLACKWOLF_รหัสรัน ภายในตำแหน่งที่เลือกโดยอัตโนมัติ</small>
+        </article>
+
+        <article class="panel settings-card status-card settings-span-2">
+          <div class="settings-card-head"><span class="settings-icon">●</span><div><h2 data-i18n="statusTitle">สถานะระบบ</h2><p data-i18n="statusDesc">ตรวจสอบ Local Engine, Excel, พื้นที่จัดเก็บ, คู่มือ และงานที่กำลังรัน</p></div></div>
+          <div class="system-status-grid">
+            <div><span data-i18n="engineLabel">Local Engine</span><strong id="settingsEngineStatus">กำลังตรวจสอบ</strong></div>
+            <div><span>Microsoft Excel</span><strong id="settingsExcelStatus">กำลังตรวจสอบ</strong></div>
+            <div><span>Windows PowerShell</span><strong id="settingsPowerShellStatus">กำลังตรวจสอบ</strong></div>
+            <div><span data-i18n="storageLabel">พื้นที่จัดเก็บ</span><strong id="settingsStorageStatus">กำลังตรวจสอบ</strong></div>
+            <div><span data-i18n="manualLabel">คู่มือ PDF</span><strong id="settingsManualStatus">กำลังตรวจสอบ</strong></div>
+            <div><span data-i18n="activeRunLabel">Run ที่กำลังทำงาน</span><strong id="settingsActiveRuns">0</strong></div>
+          </div>
+        </article>
+
+        <article class="panel settings-card">
+          <div class="settings-card-head"><span class="settings-icon">ℹ</span><div><h2 data-i18n="systemInfoTitle">ข้อมูลระบบ</h2><p data-i18n="systemInfoDesc">รายละเอียดเวอร์ชันและการประมวลผล</p></div></div>
+          <div class="setting-row"><span>Version</span><strong>2.6.5 Run Retention</strong></div>
+          <div class="setting-row"><span>Processing</span><strong>Local Excel Automation</strong></div>
+          <div class="setting-row"><span>Internet</span><strong>Not required</strong></div>
+          <div class="setting-row"><span>Data upload</span><strong>Localhost only</strong></div>
+        </article>
+
+        <article class="panel settings-card important-card">
+          <div class="settings-card-head"><span class="settings-icon">!</span><div><h2 data-i18n="importantTitle">ข้อควรทราบ</h2><p data-i18n="importantDesc">ปิดไฟล์ Excel ต้นฉบับก่อนเริ่มประมวลผล</p></div></div>
+          <p data-i18n="importantText1">ห้ามปิด Microsoft Excel ระหว่างประมวลผล และควรปิดไฟล์ Master กับเช็คสถานะ ISSUE ที่เปิดค้างอยู่ก่อนกด Run</p>
+          <p data-i18n="importantText2">ระบบไม่เขียนทับไฟล์ต้นฉบับ แต่สร้างไฟล์ฉบับอัปเดตและ Backup แยกออกมา</p>
+        </article>
+
+        <article class="panel settings-card danger-card settings-span-2">
+          <div class="settings-card-head"><span class="settings-icon">↺</span><div><h2 data-i18n="resetTitle">รีเซ็ตโปรแกรม</h2><p data-i18n="resetDesc">คืนค่าภาษาและธีม ล้างประวัติ Run และไฟล์ชั่วคราวของ BLACKWOLF เท่านั้น</p></div></div>
+          <div class="reset-warning" data-i18n="resetWarning">ไม่ลบไฟล์ Excel ต้นฉบับที่อยู่ภายนอกโปรแกรม แต่ Run ที่กำลังทำงานจะถูกหยุด</div>
+          <button class="outline-btn danger-outline" id="resetProgramBtn" type="button" data-i18n="resetButton">รีเซ็ตโปรแกรม</button>
+        </article>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
