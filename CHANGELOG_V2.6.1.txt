@@ -1,0 +1,8 @@
+BLACKWOLF Web V2.6.1 Local Engine Detection Fix
+
+- แก้การตรวจ Local Engine ที่ไม่พบ Microsoft Excel Desktop บางเครื่อง
+- รองรับ Excel/Office ทั้ง 32-bit และ 64-bit
+- ตรวจ Registry หลายตำแหน่งและ App Paths
+- ตรวจตำแหน่ง EXCEL.EXE ของ Office Click-to-Run
+- ใช้ Excel COM probe เป็นวิธีสำรอง พร้อม timeout และ cleanup
+- ตรวจ Windows PowerShell จาก PATH และตำแหน่งมาตรฐานของ Windows

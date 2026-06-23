@@ -1,0 +1,8 @@
+BLACKWOLF Web V2.4 Control Complete
+- เพิ่มปุ่ม × เอาไฟล์ออกทีละประเภทก่อนรัน โดยไม่ลบไฟล์ต้นฉบับในเครื่อง
+- เพิ่มปุ่มล้างเฉพาะ Optional: SM, Blacklist และ ETL
+- เพิ่มปุ่มหยุดการรัน พร้อมปิด PowerShell/Excel Engine ของ Run นั้น
+- เพิ่มสถานะ CANCELLED แยกจาก FAILED
+- เพิ่มปุ่มล้างข้อมูล Run หลังหยุดหรือรันเสร็จ
+- แก้ Engine ไม่ยึด xl/tables/table1.xml แบบตายตัว ค้นหา Table/Worksheet XML อัตโนมัติ
+- คง Turbo Mode, Heartbeat และ Auto-timeout 20 นาทีจาก V2.3

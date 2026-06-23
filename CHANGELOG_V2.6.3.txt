@@ -1,0 +1,17 @@
+﻿BLACKWOLF Web V2.6.3 Large Data & Historical Latest-Day Fix
+
+แก้ไขหลัก
+- รองรับ Daily Report ขนาดใหญ่ระดับ 500,000+ แถวด้วยการอ่านข้อมูลเป็นช่วงละ 20,000 แถว
+- อ่านเฉพาะคอลัมน์ A:O ที่ Workflow ใช้งานจริง เพื่อลดหน่วยความจำ
+- เขียนข้อมูลกลับ Excel เป็นช่วงละ 10,000 แถว ลดความเสี่ยง Out of Memory
+- เพิ่ม Large Data Mode อัตโนมัติเมื่อ Daily Report มีขนาดตั้งแต่ 50 MB
+- Large Data Mode ขยายเวลาประมวลผลสูงสุดเป็น 120 นาที; ไฟล์ทั่วไป 30 นาที
+- แก้ Daily Report ย้อนหลังเก่ากว่า Master: ใช้วันล่าสุดของไฟล์เป็นรอบ Historical Latest-Day
+- ป้องกันการดึงข้อมูลประวัติทั้งไฟล์ 5 แสนแถวเข้าผลลัพธ์โดยไม่ตั้งใจ
+- แสดงจำนวนแถวจริงของ Daily Report และช่วงวันที่ที่ใช้ใน Workflow Progress
+- คง Local Engine Detection Fix และกติกา M190, ETL, SM, Blacklist, ISSUE
+
+ตัวอย่างที่ตรวจ
+- รายงานงานประกันแรงงานต่างด้าว_260415_235001.xlsx มี 552,089 Data rows
+- ช่วง CreateDate 2025-01-01 ถึง 2026-04-15
+- เมื่อ Master ปัจจุบันเริ่ม 2026-06-08 ระบบใช้ Historical Latest-Day = 2026-04-15 แทน Error

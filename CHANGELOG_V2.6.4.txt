@@ -1,0 +1,11 @@
+BLACKWOLF Web V2.6.4 Settings & Support
+
+- Added persistent Thai/English language selector.
+- Added persistent light/dark theme.
+- Added LINE support link.
+- Added optional external PDF manual discovery and download.
+- Added Windows result-folder picker and persistent storage setting.
+- Completed Run results are copied to BLACKWOLF_<Run ID> under selected storage.
+- Added system status panel.
+- Added safe program reset for settings, Run history, and BLACKWOLF temporary files.
+- Original Excel files outside BLACKWOLF are never deleted by reset.

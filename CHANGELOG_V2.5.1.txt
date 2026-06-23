@@ -1,0 +1,11 @@
+BLACKWOLF Web V2.5.1 Matrix Hotfix
+
+แก้ไข:
+- แก้ PowerShell multidimensional array index ที่บรรทัดคัดลอก PV final
+- เปลี่ยน $outValues[$r, $c - 1] เป็น $outValues[$r, ($c - 1)]
+- เปลี่ยน $outFormats[$r, $c - 1] เป็น $outFormats[$r, ($c - 1)]
+- ป้องกัน Error: System.Object[] does not contain a method named op_Subtraction
+
+ผลกระทบ:
+- แก้เฉพาะขั้นตอนสร้าง PV final
+- ไม่เปลี่ยนเงื่อนไขธุรกิจ การจับคู่ M190/ETL หรือไฟล์ต้นฉบับ

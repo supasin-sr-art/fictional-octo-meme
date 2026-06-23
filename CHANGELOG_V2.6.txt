@@ -1,0 +1,9 @@
+﻿BLACKWOLF Web V2.6 Executive Issue
+
+- เพิ่มไฟล์เช็คสถานะ ISSUE กลับเป็น Required
+- อัปเดต Data, Check และ ETL ในไฟล์ ISSUE
+- ดาวน์โหลด Master ด้วยชื่อ เช็คกรมธรรม์ต่างด้าวที่ยังไม่ออก V.2.5.3.xlsx
+- นำ Complete Package ออกจากหน้าเว็บและไม่สร้าง ZIP Package
+- ปรับ Executive Report Viewer สำหรับนำเสนอผู้บริหารและพิมพ์ PDF
+- คงระบบหยุดและลบ Run เฉพาะรายการจาก V2.5
+- รวม Matrix Hotfix จาก V2.5.1
